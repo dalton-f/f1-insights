@@ -4,6 +4,12 @@ A web application built with Flask, PostCSS (including TailwindCSS), and the Fas
 
 F1 Insights lets you create simple Formula 1 lap time and telemetry graphs. It also includes information abou the current driver and constructor standings, including trends and who can still win the titles.
 
+## Features
+
+- Full driver and constructors standings
+- Information about whether a driver or team can still win the championship
+- Graphical representations of lap telemetry for any driver
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.

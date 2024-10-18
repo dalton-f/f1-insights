@@ -1,6 +1,7 @@
 import fastf1
 from fastf1.ergast import Ergast
 
+# Note: fastest lap point is being removed for the 25 and 26 season, so this will need to be updated
 RACE_WIN_POINTS = 26
 SPRINT_WIN_POINTS = 8
 
