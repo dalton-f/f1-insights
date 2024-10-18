@@ -1,0 +1,31 @@
+{
+  "name": "f1-insights",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint:js": "npx eslint ./src/js",
+    "dev": "npx mix watch",
+    "prod": "npx mix --production",
+    "push:upstream": "git push origin main -u"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.12.0",
+    "globals": "^15.11.0",
+    "laravel-mix": "^6.0.49",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "tailwindcss": "^3.4.14"
+  }
+}

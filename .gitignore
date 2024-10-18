@@ -1,0 +1,47 @@
+# Ignore Node.js dependencies and Python virtualenv
+node_modules/
+venv/
+
+# Python
+venv/
+*.pyc
+__pycache__/
+instance/
+.env
+*.env
+
+# Flask cache
+.cache/
+.cache/*
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# PostCSS / Tailwind CSS
+static/css/output.css
+static/css/output.css.map
+
+# Build output directories (if using other build tools like Webpack)
+dist/
+build/
+static/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
