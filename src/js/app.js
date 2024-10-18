@@ -1,6 +1,10 @@
 import { addClass, createElement, setInnerHTML } from "./helpers";
 
+import Chart from "chart.js/auto";
+
 const driverStandingsTable = document.getElementById("driverStandingsTable");
+
+const ctx = document.getElementById("myChart");
 
 const fetchData = async (url) => {
   try {
@@ -37,9 +41,7 @@ const populateDriverStandings = async () => {
   const driverStandings = data[0].DriverStandings;
 
   // Use a calculation to determine the maximum total of points remaining
-  const highestTotalRemainingPoints = await fetchData(
-    "/api/f1-data/remaining-points",
-  );
+  const totalRemainingPoints = await fetchData("/api/f1-data/remaining-points");
 
   // Get the points of the championship leader
   const currentLeadingPoints = parseInt(driverStandings[0].points);
@@ -61,7 +63,8 @@ const populateDriverStandings = async () => {
       const pointDeficit = currentLeadingPoints - points;
 
       // Determine if the point deficit can be overcome within the remaining rounds
-      const canWinChampionship = highestTotalRemainingPoints > pointDeficit;
+      // TODO: add countback for number of wins if points are drawn
+      const canWinChampionship = totalRemainingPoints > pointDeficit;
 
       // Create an array with the data to be displayed
       const cellsData = [
@@ -87,6 +90,46 @@ const populateDriverStandings = async () => {
   driverStandingsTable.appendChild(fragment);
 };
 
+const generateLapGraph = async () => {
+  const lapsData = await fetchData("/api/f1-data/laps");
+
+  const datasets = [];
+
+  // From the driver data, generate the dataset objects
+  for (const driver in lapsData) {
+    const laps = lapsData[driver];
+
+    // Loop through the laps and convert into seconds
+    const times = laps.map((lap) => {
+      // eslint-disable-next-line no-unused-vars
+      const [_, minutes, seconds] = lap[0].split(":");
+
+      const totalSeconds = parseFloat(minutes) * 60 + parseFloat(seconds);
+
+      return totalSeconds;
+    });
+
+    // Build the object
+    const dataset = {
+      label: driver,
+      data: times,
+    };
+
+    datasets.push(dataset);
+  }
+
+  // Use multiple datasets to graph the drivers times
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: Array.from({ length: 53 }, (_, i) => i + 1),
+      datasets: datasets,
+    },
+  });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   populateDriverStandings();
+
+  generateLapGraph();
 });

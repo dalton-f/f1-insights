@@ -34,3 +34,32 @@ def get_maximum_available_points():
         return maximumAvailablePoints
     except Exception as e:
         return {'error': str(e)}
+
+def get_lap_times():
+    try:
+        drivers = ["LEC", "PIA", "BOT"]
+
+        times = {}
+
+        session = fastf1.get_session(2024, 'Monza', 'R')
+        session.load()
+
+        # Pick laps for all requested drivers at once
+        laps = session.laps.pick_drivers(drivers)
+
+        # Iterate over each driver and collect their lap times
+        for driver in drivers:
+            driver_laps = laps.pick_drivers(driver)
+            driver_times = []
+
+            for lap in driver_laps.iloc:
+                # Remove "0 days" from the time string
+                formattedLapTime = str(lap["LapTime"]).split("days ")[1]
+                driver_times.append([formattedLapTime, lap["Compound"]])
+
+            times[driver] = driver_times
+
+        # Times is an object returned with key values pairs of a driver name => a subarray of the lap times and compond used
+        return times
+    except Exception as e:
+        return {'error': str(e)}
