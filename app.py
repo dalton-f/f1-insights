@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify
-
-import fastf1
+from services.f1_data_service import get_current_driver_standings, get_maximum_available_points
 
 app = Flask(__name__)
 
@@ -8,19 +7,16 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/api/f1data')
-def get_f1_data():
-    session = fastf1.get_session(2019, 'Monza', 'Q')
+@app.route('/api/f1-data/driver-standings')
+def get_driver_standings():
+    standings = get_current_driver_standings()
+    return jsonify(standings)
 
-    session.load(telemetry=False, laps=False, weather=False)
+@app.route('/api/f1-data/remaining-points')
+def remaining_points():
+    points = get_maximum_available_points()
     
-    vettel = session.get_driver('VET')
-    
-    f1_data = {
-        "driver": vettel['FirstName'],
-    }
-    
-    return jsonify(f1_data)
+    return jsonify(points)
 
 if __name__ == '__main__':
     app.run(debug=True)

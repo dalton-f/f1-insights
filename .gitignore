@@ -45,3 +45,5 @@ Thumbs.db
 *.egg
 *.egg-info/
 dist/
+
+notes.md
