@@ -93,11 +93,18 @@ const populateDriverStandings = async () => {
 const generateLapGraph = async () => {
   const lapsData = await fetchData("/api/f1-data/laps");
 
+  let totalLaps = 0;
+
   const datasets = [];
 
   // From the driver data, generate the dataset objects
   for (const driver in lapsData) {
     const laps = lapsData[driver];
+
+    // Calculate the max total laps for the label generation
+    if (laps.length > totalLaps) {
+      totalLaps = laps.length;
+    }
 
     // Loop through the laps and convert into seconds
     const times = laps.map((lap) => {
@@ -122,7 +129,7 @@ const generateLapGraph = async () => {
   new Chart(ctx, {
     type: "line",
     data: {
-      labels: Array.from({ length: 53 }, (_, i) => i + 1),
+      labels: Array.from({ length: totalLaps }, (_, i) => i + 1),
       datasets: datasets,
     },
   });
