@@ -131,8 +131,9 @@ const generateLapGraph = async () => {
     const dataset = {
       label: driver,
       data: times,
+      laps: laps,
 
-      // Sets the point to the same colour as the tyre compound
+      // Sets the point to the same color as the tyre compound
       pointBackgroundColor: (context) => {
         const index = context.dataIndex;
         const value = laps[index][1];
@@ -140,8 +141,7 @@ const generateLapGraph = async () => {
         return tyreCompoundColors[value];
       },
 
-      // Set the line colours and point borders to match the driver team
-
+      // Set the line colors and point borders to match the driver team
       pointBorderColor: () => {
         const value = lapsData[driver]["team_color"];
         return `#${value}`;
@@ -157,7 +157,8 @@ const generateLapGraph = async () => {
         return `#${value}`;
       },
 
-      pointRadius: 4,
+      pointRadius: 3.5,
+      pointHoverRadius: 8,
     };
 
     datasets.push(dataset);
@@ -167,8 +168,70 @@ const generateLapGraph = async () => {
   new Chart(ctx, {
     type: "line",
     data: {
+      // Generates an array from 1 to total laps to label the axis
       labels: Array.from({ length: totalLaps }, (_, i) => i + 1),
       datasets: datasets,
+    },
+    options: {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Lap number",
+            padding: {
+              top: 24,
+            },
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Lap time",
+            padding: {
+              bottom: 24,
+            },
+          },
+        },
+      },
+
+      // Styles the tooltip hover
+
+      plugins: {
+        tooltip: {
+          enabled: true,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          titleColor: "#ffffff",
+          borderColor: "rgba(255, 255, 255, 0.5)",
+          borderWidth: 1,
+          padding: 16,
+
+          titleFont: {
+            size: 16,
+          },
+          bodyFont: {
+            size: 16,
+          },
+
+          titleAlign: "center",
+          titleMarginBottom: 8,
+          cornerRadius: 8,
+          displayColors: false,
+
+          useHTML: true,
+
+          callbacks: {
+            title: (tooltipItems) => `Lap ${tooltipItems[0].label}`,
+            label: (tooltipItem) => {
+              const dataset = datasets[tooltipItem.datasetIndex];
+              const value = tooltipItem.raw;
+
+              const lapCompound = dataset.laps[tooltipItem.dataIndex][1];
+
+              return `${dataset.label}: ${value} [${lapCompound}]`;
+            },
+          },
+        },
+      },
     },
   });
 };

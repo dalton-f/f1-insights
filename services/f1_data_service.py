@@ -85,26 +85,26 @@ def get_lap_times():
 
         # Iterate over each driver and collect their lap times
         for driver in drivers:
-            driver_laps = laps.pick_drivers(driver)
-            driver_times = []
+            driverLaps = laps.pick_drivers(driver)
+            driverTimes = []
 
-            # Get the team colour of the driver
-            driver_info = results[results['Abbreviation'] == driver]
-            team_colour = driver_info['TeamColor'].values[0]
+            # Get the team color of the driver
+            driverInfo = results[results['Abbreviation'] == driver]
+            teamColor = driverInfo['TeamColor'].values[0]
 
-            for lap in driver_laps.iloc:
+            for lap in driverLaps.iloc:
                 # If no time is set, ignore it
                 if lap["LapTime"] is pd.NaT:
                     continue
         
                 # Remove "0 days" from the time string
                 formattedLapTime = str(lap["LapTime"]).split("days ")[1]
-                driver_times.append([formattedLapTime, lap["Compound"]])
+                driverTimes.append([formattedLapTime, lap["Compound"]])
 
-            # Add a new subobject to the data object assigned to the drivers abbrevation containing an array of their lap times and a hexcode of their team colour
+            # Add a new subobject to the data object assigned to the drivers abbrevation containing an array of their lap times and a hexcode of their team color
             data[driver] = {
-                "team_color": team_colour,
-                "lap_times": driver_times
+                "team_color": teamColor,
+                "lap_times": driverTimes
             }
 
         return data
