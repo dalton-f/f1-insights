@@ -23,34 +23,39 @@ def get_maximum_available_points():
     try:
         currentYear = datetime.now().year
         currentDate = datetime.now(timezone.utc)
-        
-        all_events = fastf1.get_event_schedule(currentYear, include_testing=False)
+
+        events = fastf1.get_event_schedule(currentYear, include_testing=False)
 
         remainingSprintCount = 0
         remainingRaceCount = 0
 
         # Loop through all events to find future and ongoing ones
-        for event in all_events.iloc:
+        for event in events.iloc:
             eventRaceDate = event['Session5DateUtc']
 
             # Ensure that both dates are timezone aware using UTC
             if eventRaceDate.tzinfo is None:
                 eventRaceDate = eventRaceDate.replace(tzinfo=timezone.utc)
 
-            # Check if the event is either future or currently ongoing (today)
-            if eventRaceDate >= currentDate:
-                # Count the event as a race
-                remainingRaceCount += 1
+            # Ignore past events
+            if eventRaceDate < currentDate:
+                continue
 
-                # If it's a sprint weekend, increment the sprint count and the sprint hasn't happened yet
-                if event['EventFormat'] == "sprint_qualifying":
-                    sprintSessionDate = event["Session3DateUtc"]
+            # Count the event as a race
+            remainingRaceCount += 1
 
-                    if sprintSessionDate.tzinfo is None:
-                        sprintSessionDate = sprintSessionDate.replace(tzinfo=timezone.utc)
+            # If the weekend doesn't include a sprint, we don't need to do anything else
+            if event["EventFormat"] != "sprint_qualifying":
+                continue
 
-                    if sprintSessionDate >= currentDate:
-                        remainingSprintCount += 1
+            # If it's a sprint weekend, increment the sprint count and the sprint hasn't happened yet
+            sprintSessionDate = event["Session3DateUtc"]
+
+            if sprintSessionDate.tzinfo is None:
+                sprintSessionDate = sprintSessionDate.replace(tzinfo=timezone.utc)
+
+            if sprintSessionDate >= currentDate:
+                remainingSprintCount += 1
 
         # Calculate maximum available points (25 points for race win, 1 for fastest lap, 8 for sprint win)
         maximumAvailablePoints = remainingRaceCount * RACE_WIN_POINTS + remainingSprintCount * SPRINT_WIN_POINTS

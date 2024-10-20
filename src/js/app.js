@@ -67,7 +67,7 @@ const populateDriverStandings = async () => {
       const canWinChampionship = totalRemainingPoints > pointDeficit;
 
       // Create an array with the data to be displayed
-      const cellsData = [
+      const cellData = [
         position,
         `${Driver.givenName} ${Driver.familyName}`,
         Constructors[0].name,
@@ -78,7 +78,7 @@ const populateDriverStandings = async () => {
       ];
 
       // Loop through the cellsData array to create and append cells
-      cellsData.forEach((data) => {
+      cellData.forEach((data) => {
         const cell = createPaddedTableCell(data);
         row.appendChild(cell);
       });
