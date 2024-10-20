@@ -43,6 +43,8 @@ const populateDriverStandings = async () => {
   // Use a calculation to determine the maximum total of points remaining
   const totalRemainingPoints = await fetchData("/api/f1-data/remaining-points");
 
+  console.log(totalRemainingPoints);
+
   // Get the points of the championship leader
   const currentLeadingPoints = parseInt(driverStandings[0].points);
 

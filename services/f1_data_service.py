@@ -24,37 +24,41 @@ def get_maximum_available_points():
         currentYear = datetime.now().year
         currentDate = datetime.now(timezone.utc)
 
-        events = fastf1.get_event_schedule(currentYear, include_testing=False)
+        remainingEvents = fastf1.get_events_remaining(include_testing=False)
 
+        remainingRaceCount = len(remainingEvents)
         remainingSprintCount = 0
-        remainingRaceCount = 0
 
-        # Loop through all events to find future and ongoing ones
-        for event in events.iloc:
-            eventRaceDate = event['Session5DateUtc']
+        # Get the most recent previous round's data
+        previousRoundNumber = remainingEvents.iloc[0]["RoundNumber"] - 1
+        previousEvent = fastf1.get_event(currentYear, previousRoundNumber)
 
-            # Ensure that both dates are timezone aware using UTC
-            if eventRaceDate.tzinfo is None:
-                eventRaceDate = eventRaceDate.replace(tzinfo=timezone.utc)
+        # Session5 will always be the race for sprint_qualifying and conventional events
+        previousEventRaceDate = previousEvent["Session5DateUtc"]
 
-            # Ignore past events
-            if eventRaceDate < currentDate:
-                continue
+        # Ensures both dates are offset-aware for comparsions
+        if previousEventRaceDate.tzinfo is None:
+                previousEventRaceDate = previousEventRaceDate.replace(tzinfo=timezone.utc)
 
-            # Count the event as a race
+        # If the previous event is ongoing, include an extra race - this ensures the point count updates during an ongoing event and stays accurate
+        if(previousEventRaceDate > currentDate):
             remainingRaceCount += 1
 
-            # If the weekend doesn't include a sprint, we don't need to do anything else
-            if event["EventFormat"] != "sprint_qualifying":
-                continue
+            # Check if the ongoing event has a sprint
+            if(previousEvent["EventFormat"] == "sprint_qualifying"):
+                previousEventSprintDate = previousEvent["Session3DateUtc"]
 
-            # If it's a sprint weekend, increment the sprint count and the sprint hasn't happened yet
-            sprintSessionDate = event["Session3DateUtc"]
+                # Ensures both dates are offset-aware for comparsions
+                if previousEventSprintDate.tzinfo is None:
+                    previousEventSprintDate = previousEventSprintDate.replace(tzinfo=timezone.utc)
 
-            if sprintSessionDate.tzinfo is None:
-                sprintSessionDate = sprintSessionDate.replace(tzinfo=timezone.utc)
+                # If the sprint event hasn't occured, add an extra remaining sprint
+                if previousEventSprintDate > currentDate:
+                    remainingSprintCount += 1
 
-            if sprintSessionDate >= currentDate:
+        # Loop over the remaining events and check for sprint weekends
+        for event in remainingEvents.iloc:
+            if(event["EventFormat"] == "sprint_qualifying"):
                 remainingSprintCount += 1
 
         # Calculate maximum available points (25 points for race win, 1 for fastest lap, 8 for sprint win)
