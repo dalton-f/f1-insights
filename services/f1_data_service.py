@@ -71,13 +71,14 @@ def get_maximum_available_points():
 
 def get_lap_times():
     try:
-        drivers = ["VER", "NOR", "ZHO"]
+        drivers = ["VER", "ZHO"]
 
-        times = {}
+        data = {}
 
-        session = fastf1.get_session(2024, 19, 'Sprint')
+        session = fastf1.get_session(2024, 18, 'R')
         session.load()
 
+        results = session.results
 
         # Pick laps for all requested drivers at once
         laps = session.laps.pick_drivers(drivers)
@@ -86,6 +87,10 @@ def get_lap_times():
         for driver in drivers:
             driver_laps = laps.pick_drivers(driver)
             driver_times = []
+
+            # Get the team colour of the driver
+            driver_info = results[results['Abbreviation'] == driver]
+            team_colour = driver_info['TeamColor'].values[0]
 
             for lap in driver_laps.iloc:
                 # If no time is set, ignore it
@@ -96,9 +101,12 @@ def get_lap_times():
                 formattedLapTime = str(lap["LapTime"]).split("days ")[1]
                 driver_times.append([formattedLapTime, lap["Compound"]])
 
-            times[driver] = driver_times
+            # Add a new subobject to the data object assigned to the drivers abbrevation containing an array of their lap times and a hexcode of their team colour
+            data[driver] = {
+                "team_color": team_colour,
+                "lap_times": driver_times
+            }
 
-        # Times is an object returned with key values pairs of a driver name => a subarray of the lap times and compond used
-        return times
+        return data
     except Exception as e:
         return {'error': str(e)}

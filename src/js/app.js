@@ -1,6 +1,17 @@
 import { addClass, createElement, setInnerHTML } from "./helpers";
 
 import Chart from "chart.js/auto";
+import "chartjs-adapter-moment";
+
+// import moment from "moment";
+
+const tyreCompoundColors = {
+  WET: "#050038",
+  INTER: "#008714",
+  HARD: "#FFFFFF",
+  MEDIUM: "#ffc300",
+  SOFT: "#ff5733",
+};
 
 const driverStandingsTable = document.getElementById("driverStandingsTable");
 
@@ -42,8 +53,6 @@ const populateDriverStandings = async () => {
 
   // Use a calculation to determine the maximum total of points remaining
   const totalRemainingPoints = await fetchData("/api/f1-data/remaining-points");
-
-  console.log(totalRemainingPoints);
 
   // Get the points of the championship leader
   const currentLeadingPoints = parseInt(driverStandings[0].points);
@@ -101,7 +110,7 @@ const generateLapGraph = async () => {
 
   // From the driver data, generate the dataset objects
   for (const driver in lapsData) {
-    const laps = lapsData[driver];
+    const laps = lapsData[driver]["lap_times"];
 
     // Calculate the max total laps for the label generation
     if (laps.length > totalLaps) {
@@ -122,6 +131,33 @@ const generateLapGraph = async () => {
     const dataset = {
       label: driver,
       data: times,
+
+      // Sets the point to the same colour as the tyre compound
+      pointBackgroundColor: (context) => {
+        const index = context.dataIndex;
+        const value = laps[index][1];
+
+        return tyreCompoundColors[value];
+      },
+
+      // Set the line colours and point borders to match the driver team
+
+      pointBorderColor: () => {
+        const value = lapsData[driver]["team_color"];
+        return `#${value}`;
+      },
+
+      lineBackgroundColor: () => {
+        const value = lapsData[driver]["team_color"];
+        return `#${value}`;
+      },
+
+      lineBorderColor: () => {
+        const value = lapsData[driver]["team_color"];
+        return `#${value}`;
+      },
+
+      pointRadius: 4,
     };
 
     datasets.push(dataset);
