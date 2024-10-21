@@ -1,15 +1,12 @@
 import { addClass, createElement, setInnerHTML } from "./helpers";
 
 import Chart from "chart.js/auto";
-import "chartjs-adapter-moment";
-
-// import moment from "moment";
 
 const tyreCompoundColors = {
-  WET: "#050038",
-  INTER: "#008714",
+  WET: "##4491D2",
+  INTERMEDIATE: "#3AC82C",
   HARD: "#FFFFFF",
-  MEDIUM: "#ffc300",
+  MEDIUM: "#ffc400",
   SOFT: "#ff5733",
 };
 
@@ -119,12 +116,12 @@ const generateLapGraph = async () => {
 
     // Loop through the laps and convert into seconds
     const times = laps.map((lap) => {
+      // Remove hours from the lap time string
       // eslint-disable-next-line no-unused-vars
       const [_, minutes, seconds] = lap[0].split(":");
 
-      const totalSeconds = parseFloat(minutes) * 60 + parseFloat(seconds);
-
-      return totalSeconds;
+      // Convert to total seconds
+      return (parseFloat(minutes) * 60 + parseFloat(seconds)).toFixed(3);
     });
 
     // Build the object
@@ -157,7 +154,7 @@ const generateLapGraph = async () => {
         return `#${value}`;
       },
 
-      pointRadius: 3.5,
+      pointRadius: 4,
       pointHoverRadius: 8,
     };
 
@@ -191,11 +188,22 @@ const generateLapGraph = async () => {
               bottom: 24,
             },
           },
+
+          ticks: {
+            callback: (value) => {
+              // Calculate minutes
+              const minutes = Math.floor(value / 60);
+
+              // Calculate remaining seconds
+              const seconds = (value % 60).toFixed(0);
+
+              return `${minutes}:${seconds}`;
+            },
+          },
         },
       },
 
       // Styles the tooltip hover
-
       plugins: {
         tooltip: {
           enabled: true,
@@ -217,8 +225,6 @@ const generateLapGraph = async () => {
           cornerRadius: 8,
           displayColors: false,
 
-          useHTML: true,
-
           callbacks: {
             title: (tooltipItems) => `Lap ${tooltipItems[0].label}`,
             label: (tooltipItem) => {
@@ -227,7 +233,13 @@ const generateLapGraph = async () => {
 
               const lapCompound = dataset.laps[tooltipItem.dataIndex][1];
 
-              return `${dataset.label}: ${value} [${lapCompound}]`;
+              // Calculate minutes
+              const minutes = Math.floor(value / 60);
+
+              // Calculate remaining seconds
+              const seconds = (value % 60).toFixed(3);
+
+              return `${dataset.label}: ${minutes}:${seconds} [${lapCompound}]`;
             },
           },
         },

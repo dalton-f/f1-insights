@@ -71,11 +71,11 @@ def get_maximum_available_points():
 
 def get_lap_times():
     try:
-        drivers = ["VER", "ZHO"]
+        drivers = ["OCO"]
 
         data = {}
 
-        session = fastf1.get_session(2024, 18, 'R')
+        session = fastf1.get_session(2024, 19, 'R')
         session.load()
 
         results = session.results
