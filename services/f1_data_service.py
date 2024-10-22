@@ -4,6 +4,7 @@ import pandas as pd
 from fastf1.ergast import Ergast
 from datetime import datetime, timezone
 
+fastf1.Cache.enable_cache('cache') 
 
 # Note: fastest lap point is being removed for the 25 and 26 season, so this will need to be updated
 RACE_WIN_POINTS = 26
@@ -69,15 +70,13 @@ def get_maximum_available_points():
     except Exception as e:
         return {'error': str(e)}
 
-def get_lap_times():
+def get_lap_times(year, round, session, drivers):
     try:
-        drivers = ["OCO"]
-
         data = {}
 
-        session = fastf1.get_session(2024, 19, 'R')
+        session = fastf1.get_session(year, round, session)
         session.load()
-
+    
         results = session.results
 
         # Pick laps for all requested drivers at once
@@ -87,6 +86,8 @@ def get_lap_times():
         for driver in drivers:
             driverLaps = laps.pick_drivers(driver)
             driverTimes = []
+
+            print(driverLaps)
 
             # Get the team color of the driver
             driverInfo = results[results['Abbreviation'] == driver]
@@ -99,7 +100,7 @@ def get_lap_times():
         
                 # Remove "0 days" from the time string
                 formattedLapTime = str(lap["LapTime"]).split("days ")[1]
-                driverTimes.append([formattedLapTime, lap["Compound"]])
+                driverTimes.append([formattedLapTime, lap["Compound"], lap["LapNumber"]])
 
             # Add a new subobject to the data object assigned to the drivers abbrevation containing an array of their lap times and a hexcode of their team color
             data[driver] = {

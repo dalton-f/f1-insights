@@ -1,22 +1,31 @@
 import { addClass, createElement, setInnerHTML } from "./helpers";
-
 import Chart from "chart.js/auto";
 
 const tyreCompoundColors = {
-  WET: "##4491D2",
+  WET: "#4491D2",
   INTERMEDIATE: "#3AC82C",
   HARD: "#FFFFFF",
-  MEDIUM: "#ffc400",
+  MEDIUM: "#FFC400",
   SOFT: "#ff5733",
 };
 
 const driverStandingsTable = document.getElementById("driverStandingsTable");
-
 const ctx = document.getElementById("myChart");
 
-const fetchData = async (url) => {
+const fetchData = async (url, method = "GET", data = null) => {
   try {
-    const response = await fetch(url);
+    const options = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    if (method === "POST" && data) {
+      options.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(url, options);
 
     if (!response.ok) {
       throw new Error(
@@ -24,18 +33,17 @@ const fetchData = async (url) => {
       );
     }
 
-    const data = await response.json();
+    const responseData = await response.json();
 
-    return data;
+    return responseData;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching data:", error);
   }
 };
 
 const createPaddedTableCell = (data) => {
   const cell = createElement("td");
 
-  // Adds padding and brings back a basic border
   addClass(cell, ["styled-table-cell"]);
   setInnerHTML(cell, data);
 
@@ -99,7 +107,12 @@ const populateDriverStandings = async () => {
 };
 
 const generateLapGraph = async () => {
-  const lapsData = await fetchData("/api/f1-data/laps");
+  const lapsData = await fetchData("/api/f1-data/laps", "POST", {
+    year: 2024,
+    round: 19,
+    session: "R",
+    drivers: ["LAW"],
+  });
 
   let totalLaps = 0;
 
@@ -108,6 +121,8 @@ const generateLapGraph = async () => {
   // From the driver data, generate the dataset objects
   for (const driver in lapsData) {
     const laps = lapsData[driver]["lap_times"];
+
+    console.log(laps);
 
     // Calculate the max total laps for the label generation
     if (laps.length > totalLaps) {
@@ -139,20 +154,9 @@ const generateLapGraph = async () => {
       },
 
       // Set the line colors and point borders to match the driver team
-      pointBorderColor: () => {
-        const value = lapsData[driver]["team_color"];
-        return `#${value}`;
-      },
-
-      lineBackgroundColor: () => {
-        const value = lapsData[driver]["team_color"];
-        return `#${value}`;
-      },
-
-      lineBorderColor: () => {
-        const value = lapsData[driver]["team_color"];
-        return `#${value}`;
-      },
+      pointBorderColor: () => `#${lapsData[driver]["team_color"]}`,
+      lineBackgroundColor: () => `#${lapsData[driver]["team_color"]}`,
+      lineBorderColor: () => `#${lapsData[driver]["team_color"]}`,
 
       pointRadius: 4,
       pointHoverRadius: 8,
@@ -166,7 +170,7 @@ const generateLapGraph = async () => {
     type: "line",
     data: {
       // Generates an array from 1 to total laps to label the axis
-      labels: Array.from({ length: totalLaps }, (_, i) => i + 1),
+      labels: Array.from({ length: totalLaps + 1 }, (_, i) => i + 1),
       datasets: datasets,
     },
     options: {
@@ -203,7 +207,6 @@ const generateLapGraph = async () => {
         },
       },
 
-      // Styles the tooltip hover
       plugins: {
         tooltip: {
           enabled: true,
@@ -236,8 +239,8 @@ const generateLapGraph = async () => {
               // Calculate minutes
               const minutes = Math.floor(value / 60);
 
-              // Calculate remaining seconds
-              const seconds = (value % 60).toFixed(3);
+              // Calculate remaining seconds and ensure it is padded at the start with a 0
+              const seconds = (value % 60).toFixed(3).toString().padStart(6, 0);
 
               return `${dataset.label}: ${minutes}:${seconds} [${lapCompound}]`;
             },
