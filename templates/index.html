@@ -10,31 +10,143 @@
 
     <title>F1 Insights</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/static/css/app.css" />
 
     <script src="/static/js/app.js" defer></script>
 
     <noscript>You need to enable JavaScript to run this app.</noscript>
   </head>
-  <body>
-    <main class="p-16">
-      <section class="mx-auto w-full max-w-4xl">
-        <table class="w-full text-left">
-          <thead>
+  <body class="flex h-dvh bg-[#151519] text-white">
+    <nav
+      class="flex w-full max-w-fit flex-col gap-16 rounded-tr-3xl border-r-8 border-t-8 border-f1-red bg-[#2d2d34] px-8 py-10 text-xl"
+    >
+      <h1 class="text-3xl font-semibold">F1 Insights</h1>
+
+      <ul class="flex flex-col gap-12">
+        <li>
+          <a href="" class="flex items-center gap-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 576 512"
+            >
+              <path
+                fill="#fff"
+                d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1v16.2c0 22.1-17.9 40-40 40h-16c-1.1 0-2.2 0-3.3-.1-1.4.1-2.8.1-4.2.1L416 512h-24c-22.1 0-40-17.9-40-40v-88c0-17.7-14.3-32-32-32h-64c-17.7 0-32 14.3-32 32v88c0 22.1-17.9 40-40 40h-55.9c-1.5 0-3-.1-4.5-.2-1.2.1-2.4.2-3.6.2h-16c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9.1-2.8v-69.7h-32c-18 0-32-14-32-32.1 0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7l255.4 224.5c8 7 12 15 11 24z"
+              />
+            </svg>
+            Overview
+          </a>
+        </li>
+        <li>
+          <a href="" class="flex items-center gap-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 448 512"
+            >
+              <path
+                fill="#fff"
+                d="M32 0c17.7 0 32 14.3 32 32v16l69-17.2c38.1-9.5 78.3-5.1 113.5 12.5 46.3 23.2 100.8 23.2 147.1 0l9.6-4.8c20.6-10.4 44.8 4.6 44.8 27.6v279.7c0 13.3-8.3 25.3-20.8 30l-34.7 13c-46.2 17.3-97.6 14.6-141.7-7.4-37.9-19-81.3-23.7-122.5-13.4L64 384v96c0 17.7-14.3 32-32 32S0 497.7 0 480V32C0 14.3 14.3 0 32 0zm32 187.1 64-13.9v65.5l-64 13.9V318l48.8-12.2c5.1-1.3 10.1-2.4 15.2-3.3v-63.9l38.9-8.4c8.3-1.8 16.7-2.5 25.1-2.1v-64c13.6.4 27.2 2.6 40.4 6.4l23.6 6.9v66.7l-41.7-12.3c-7.3-2.1-14.8-3.4-22.3-3.8v71.4c21.8 1.9 43.3 6.7 64 14.4V244l22.7 6.7c13.5 4 27.3 6.4 41.3 7.4v-64.2c-7.8-.8-15.6-2.3-23.2-4.5l-40.8-12v-62c-13-3.8-25.8-8.8-38.2-15-8.2-4.1-16.9-7-25.8-8.8V164c-13-.4-26 .8-38.7 3.6l-25.3 5.6V98l-64 16v73.1zm256 148.6c16.8 1.5 33.9-.7 50-6.8l14-5.2V252l-7.9 1.8c-18.4 4.3-37.3 5.7-56.1 4.5v77.4zm64-149.4v-70.8c-20.9 6.1-42.4 9.1-64 9.1V194c13.9 1.4 28 .5 41.7-2.6l22.3-5.2z"
+              />
+            </svg>
+            Standings
+          </a>
+        </li>
+        <li>
+          <a href="" class="flex items-center gap-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 512 512"
+            >
+              <path
+                fill="#fff"
+                d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64v336c0 44.2 35.8 80 80 80h400c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l89.4-89.3 57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"
+              />
+            </svg>
+            Lap telemetry
+          </a>
+        </li>
+      </ul>
+
+      <a
+        href="https://github.com/dalton-f/f1-insights"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-auto grid place-items-center rounded-3xl bg-[#15151e] p-3"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 496 512"
+        >
+          <path
+            fill="#fff"
+            d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
+          />
+        </svg>
+      </a>
+    </nav>
+
+    <main class="flex w-full gap-12 p-12">
+      <section class="w-full">
+        <div class="rounded-tr-3xl border-r-8 border-t-8 border-f1-red">
+          <p
+            class="-mt-4 max-w-fit bg-[#151519] pr-4 font-semibold text-f1-red"
+          >
+            ROUND 21 - UP NEXT
+          </p>
+
+          <div class="grid">
+            <div class="col-span-full row-span-full opacity-40">
+              <img
+                src="https://img.goodfon.com/original/1920x1080/3/79/max-verstappen-red-bull-f1-british-grand-prix-2017-silversto.jpg"
+                class="rounded-bl-3xl rounded-tr-3xl"
+                alt=""
+              />
+            </div>
+
+            <div
+              class="z-10 col-span-full row-span-full flex flex-col gap-4 px-4 py-8"
+            >
+              <p class="text-4xl font-semibold">Brazil</p>
+              <p class="text-sm">
+                FORMULA 1 LENOVO GRANDE PRÊMIO DE SÃO PAULO 2024
+              </p>
+              <p class="text-xl uppercase">01 Nov 2024 - 03 Nov 2024</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="w-full max-w-md">
+        <table class="w-full text-left text-lg">
+          <caption class="mb-8 text-left text-3xl font-semibold">
+            2024
+          </caption>
+          <thead class="text-xl text-white/70">
             <tr>
-              <th class="p-6">POS</th>
-              <th class="p-6">DRIVER</th>
-              <th class="p-6">TEAM</th>
-              <th class="p-6">PTS</th>
-              <th class="p-6">TITLE CONTENDER</th>
+              <th class="styled-table-cell">POS</th>
+              <th class="styled-table-cell">DRIVER</th>
+              <th class="styled-table-cell">PTS</th>
             </tr>
           </thead>
 
           <tbody id="driverStandingsTable"></tbody>
         </table>
-
-        <canvas id="myChart" aria-label="Lap times graph" role="img"> </canvas>
-      </section>
+      </aside>
     </main>
   </body>
 </html>

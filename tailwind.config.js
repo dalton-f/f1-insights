@@ -1,12 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ["./templates/**/*.html", "./src/**/*.js"],
-  theme: {
-    extend: {
-      colors: {
-        "light-grey": "#f3f3f2",
-      },
+
+export const content = ["./templates/**/*.html", "./src/**/*.js"];
+export const theme = {
+  extend: {
+    colors: {
+      "light-grey": "#212121",
+      "f1-red": "#e10600",
     },
   },
-  plugins: [],
 };
+export const plugins = [];
