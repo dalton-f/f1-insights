@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F1 Insights | Telemetry Analysis</title>
+
+    <link rel="stylesheet" href="/static/css/app.css" />
+
+    <script src="/static/js/app.js" defer></script>
+  </head>
+  <body class="bg-[#151519] text-white">
+    <main class="mx-auto w-full max-w-screen-xl py-16">
+      <section class="flex flex-col gap-12">
+        <div class="grid grid-cols-3 gap-6">
+          <select
+            name="yearSelector"
+            id="yearSelector"
+            class="h-12 rounded-lg bg-[#27272a] px-4 font-semibold"
+          >
+            <option value="" selected disabled>Select year</option>
+          </select>
+          <select
+            name="trackSelector"
+            id="trackSelector"
+            class="h-12 rounded-lg bg-[#27272a] px-4 font-semibold"
+          >
+            <option value="" selected disabled>Select track</option>
+          </select>
+
+          <select
+            name="sessionSelector"
+            id="sessionSelector"
+            class="h-12 rounded-lg bg-[#27272a] px-4 font-semibold"
+          >
+            <option value="" selected disabled>Select session</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-12">
+          <div class="flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 448 512"
+            >
+              <path
+                fill="#fff"
+                d="M176 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h16v34.4C92.3 113.8 16 200 16 304c0 114.9 93.1 208 208 208s208-93.1 208-208c0-41.8-12.3-80.7-33.5-113.2l24.1-24.1c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L355.7 143c-28.1-23-62.2-38.8-99.7-44.6V64h16c17.7 0 32-14.3 32-32S289.7 0 272 0h-96zm72 192v128c0 13.3-10.7 24-24 24s-24-10.7-24-24V192c0-13.3 10.7-24 24-24s24 10.7 24 24z"
+              />
+            </svg>
+            <h2 class="text-2xl font-semibold uppercase">Laps Chart</h2>
+          </div>
+
+          <p>
+            Click on any driver's name to hide or show their laps (safety car
+            laps are omitted).
+          </p>
+
+          <canvas id="lapsGraph"></canvas>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold uppercase">Tyre Strategy</h2>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

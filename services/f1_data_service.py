@@ -1,6 +1,8 @@
 import fastf1
 import pandas as pd
 
+from flask import jsonify
+
 from fastf1.ergast import Ergast
 from datetime import datetime, timezone
 
@@ -70,44 +72,141 @@ def get_maximum_available_points():
     except Exception as e:
         return {'error': str(e)}
 
-def get_lap_times(year, round, session, drivers):
+def get_lap_times(year, round, session_name):
     try:
         data = {}
 
-        session = fastf1.get_session(year, round, session)
+        # Load the session data
+        session = fastf1.get_session(year, round, session_name)
         session.load()
-    
-        results = session.results
 
-        # Pick laps for all requested drivers at once
-        laps = session.laps.pick_drivers(drivers)
+        # Get the results and list of all drivers in the session
+        results = session.results
+        all_drivers = results['Abbreviation'].unique()
 
         # Iterate over each driver and collect their lap times
-        for driver in drivers:
-            driverLaps = laps.pick_drivers(driver)
+        for driver in all_drivers:
+            driverLaps = session.laps.pick_drivers(driver)
             driverTimes = []
-
-            print(driverLaps)
 
             # Get the team color of the driver
             driverInfo = results[results['Abbreviation'] == driver]
             teamColor = driverInfo['TeamColor'].values[0]
 
-            for lap in driverLaps.iloc:
-                # If no time is set, ignore it
-                if lap["LapTime"] is pd.NaT:
+            for lap in driverLaps.itertuples():
+                # If no time is set, ignore it (laps under safety car do not count)
+                if lap.LapTime is pd.NaT:
                     continue
-        
-                # Remove "0 days" from the time string
-                formattedLapTime = str(lap["LapTime"]).split("days ")[1]
-                driverTimes.append([formattedLapTime, lap["Compound"], lap["LapNumber"]])
 
-            # Add a new subobject to the data object assigned to the drivers abbrevation containing an array of their lap times and a hexcode of their team color
+                # Format lap time and collect other lap details
+                formattedLapTime = str(lap.LapTime).split("days ")[1]
+                driverTimes.append([formattedLapTime, lap.Compound, lap.LapNumber])
+
+            # Store driver lap times and team color in an object
             data[driver] = {
                 "team_color": teamColor,
                 "lap_times": driverTimes
             }
 
         return data
+    except Exception as e:
+        return {'error': str(e)}
+
+def get_next_event():
+    currentYear = datetime.now().year
+    currentDate = datetime.now(timezone.utc)
+
+    remainingEvents = fastf1.get_events_remaining(include_testing=False)
+
+    previousRoundNumber = remainingEvents.iloc[0]["RoundNumber"] - 1
+    previousEvent = fastf1.get_event(currentYear, previousRoundNumber)
+
+    # Session5 will always be the race for sprint_qualifying and conventional events
+    previousEventRaceDate = previousEvent["Session5DateUtc"]
+
+    # Ensures both dates are offset-aware for comparsions
+    if previousEventRaceDate.tzinfo is None:
+        previousEventRaceDate = previousEventRaceDate.replace(tzinfo=timezone.utc)
+
+    event = previousEvent if previousEventRaceDate > currentDate else remainingEvents.iloc[0]
+
+
+    if isinstance(event, fastf1.events.Event):
+        event = {
+            'RoundNumber': int(event['RoundNumber']),
+            'OfficialEventName': str(event['OfficialEventName']),
+            "Country": str(event["Country"]),
+            "EventName": str(event["EventName"]),
+            'Session1DateUtc': event['Session1DateUtc'].isoformat(),
+            'Session5DateUtc': event['Session5DateUtc'].isoformat(),
+        }
+
+    return event
+
+# Adapted from https://docs.fastf1.dev/gen_modules/examples_gallery/plot_results_tracker.html
+
+def get_points_change(year):
+    drivers = ["VER", "NOR", "PIA"]
+
+    output = {}
+
+    currentDate = datetime.now()
+
+    try:
+        schedule = ergast.get_race_schedule(year) 
+
+        for driverCode in drivers:
+            driverOutput = []
+
+            totalPoints = 0
+
+            for rnd in schedule.iloc:
+                # Will only update after a full weekend event is completed
+                if(rnd["raceDate"] < currentDate):
+                    raceResults = ergast.get_race_results(season=year, round = rnd["round"]).content[0]
+
+                    sprintResults = ergast.get_sprint_results(season=year, round = rnd["round"])
+
+                    raceResults = raceResults[raceResults["driverCode"] == driverCode]
+
+                    # Prevents an error incase a driver hasn't driven every race in the season
+                    if not raceResults.empty:
+                        totalPoints += raceResults["points"].iloc[0]
+
+                    # Incude sprint points if needed
+
+                    if(sprintResults.content and not raceResults.empty):
+                        sprintResults = sprintResults.content[0]
+
+                        sprintResults = sprintResults[sprintResults["driverCode"] == driverCode]
+
+                        totalPoints += sprintResults["points"].iloc[0]
+
+                    driverOutput.append({
+                        "x": int(rnd["round"]),
+                        "y": totalPoints
+                    })
+
+            output[driverCode] = driverOutput          
+
+        return output
+    except Exception as e:
+        return {'error': str(e)}
+    
+def get_event_schedule(year):
+    try:
+        schedule = fastf1.get_event_schedule(year, include_testing=False)
+
+        rounds = []
+
+        for round in schedule.iloc:
+            data = [
+                round["EventName"],
+                round["EventFormat"]
+            ]
+
+            rounds.append(data)
+
+        return rounds
     except Exception as e:
         return {'error': str(e)}
